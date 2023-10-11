@@ -16,6 +16,24 @@ import uuid
 import logging
 import sqlite3
 
+from importlib.resources import files
+
+#--------------
+# local imports
+# -------------
+
+# ----------------
+# Module constants
+# ----------------
+
+# Database resources
+SQL_SCHEMA           = files('zpida.dbase.sql').joinpath('schema.sql')
+SQL_INITIAL_DATA_DIR = files('zpida.dbase.sql.initial')
+try:
+    SQL_UPDATES_DATA_DIR = files('zpida.dbase.sql.updates')
+except ModuleNotFoundError:
+    SQL_UPDATES_DATA_DIR = None # Whne there are no updates
+
 # -------------------
 # Third party imports
 # -------------------
@@ -23,8 +41,6 @@ import sqlite3
 #--------------
 # local imports
 # -------------
-
-from . import SQL_SCHEMA, SQL_INITIAL_DATA_DIR, SQL_UPDATES_DATA_DIR
 
 # ----------------
 # Module constants
@@ -70,7 +86,7 @@ def _create_database(dbase_path):
     return sqlite3.connect(dbase_path), new_database
 
 
-def _create_schema(connection, schema_path, initial_data_dir_path, updates_data_dir, query=VERSION_QUERY):
+def _create_schema(connection, schema_resource, initial_data_dir_path, updates_data_dir, query=VERSION_QUERY):
     created = True
     cursor = connection.cursor()
     try:
@@ -78,28 +94,21 @@ def _create_schema(connection, schema_path, initial_data_dir_path, updates_data_
     except Exception:
         created = False
     if not created:
-        with open(schema_path) as f: 
-            lines = f.readlines() 
-        script = ''.join(lines)
-        connection.executescript(script)
-        log.debug("Created data model from {0}".format(os.path.basename(schema_path)))
-        file_list = glob.glob(os.path.join(initial_data_dir_path, '*.sql'))
+        connection.executescript(schema_resource.read_text())
+        log.debug("Created data model from %s", os.path.basename(schema_resource))
+        file_list = [sql_file for sql_file in initial_data_dir_path.iterdir()]
         for sql_file in file_list:
-            log.debug("Populating data model from {0}".format(os.path.basename(sql_file)))
-            with open(sql_file) as f: 
-                lines = f.readlines() 
-            script = ''.join(lines)
-            connection.executescript(script)
-    else:
+            log.debug("Populating data model from %s", os.path.basename(sql_file))
+            connection.executescript(sql_file.read_text())
+    elif updates_data_dir is not None:
         filter_func = _filter_factory(connection)
-        file_list = sorted(glob.glob(os.path.join(updates_data_dir, '*.sql')))
-        file_list = list(filter(filter_func,file_list))
+        file_list = sorted([sql_file for sql_file in updates_data_dir.iterdir()])
+        file_list = list(filter(filter_func, file_list))
         for sql_file in file_list:
-            print("Applying updates to data model from {0}".format(os.path.basename(sql_file)))
-            with open(sql_file) as f: 
-                lines = f.readlines() 
-            script = ''.join(lines)
-            connection.executescript(script)
+            print("Applying updates to data model from %s",os.path.basename(sql_file))
+            connection.executescript(sql_file.read_text())
+    else:
+        file_list = list()
     connection.commit()
     return not created, file_list
 
@@ -155,11 +164,10 @@ def create_or_open_database(url):
     just_created, file_list = _create_schema(connection, SQL_SCHEMA, SQL_INITIAL_DATA_DIR, SQL_UPDATES_DATA_DIR)
     if just_created:
         for sql_file in file_list:
-            log.warn("Populating data model from %s", os.path.basename(sql_file))
+            log.warn("Populated data model from %s", os.path.basename(sql_file))
     else:
         for sql_file in file_list:
-            log.warn("Applying updates to data model from %s", os.path.basename(sql_file))
-    #levels  = read_debug_levels(connection)
+            log.warn("Applied updates to data model from %s", os.path.basename(sql_file))
     version = _read_database_version(connection)
     guid    = _make_database_uuid(connection)
     log.info("Open database: %s, version = %s, UUID = %s", url, version, guid)

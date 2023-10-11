@@ -22,12 +22,11 @@ import decouple
 # Own modules and packages
 # ------------------------
 
-from .db.utils import create_or_open_database
+from .dbase.utils import create_or_open_database
 
 log = logging.getLogger(__name__)
 
 
 def update(options):
-	log.info("CUCU")
 	database_url = decouple.config('DATABASE_URL')
 	connection = create_or_open_database(database_url)
