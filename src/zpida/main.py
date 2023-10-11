@@ -124,6 +124,7 @@ def create_parser():
     subparser = parser.add_subparsers(dest='command')
 
     parser_db = subparser.add_parser('data', help='Database commands')
+    parser_ida = subparser.add_parser('ida', help='Database commands')
   
     # ---------------------------------------
     # Create second level parsers for 'dbase' 
@@ -131,6 +132,16 @@ def create_parser():
 
     subparser = parser_db.add_subparsers(dest='subcommand')
     dbupd = subparser.add_parser('update',  help="Database schema update")
+
+    # ---------------------------------------
+    # Create second level parsers for 'ida' 
+    # ---------------------------------------
+
+    subparser = parser_ida.add_subparsers(dest='subcommand')
+    idana = subparser.add_parser('analyze',  help="ZP analysis")
+    grp = idana.add_mutually_exclusive_group(required=True)
+    grp.add_argument('-f', '--file', type=valid_file, default=None, help='Analyze single file')
+    grp.add_argument('-d', '--dir', type=valid_dir, default=None,  help='Analyze a directory of IDA files')
 
     return parser
 
