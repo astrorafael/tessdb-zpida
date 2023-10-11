@@ -104,7 +104,7 @@ def valid_date(datestr):
 def create_parser():
     # create the top-level parser
     name = os.path.split(os.path.dirname(sys.argv[0]))[-1]
-    parser = argparse.ArgumentParser(prog="osposen", description="OSPOSEN TOOL")
+    parser = argparse.ArgumentParser(prog="zpida", description="OSPOSEN TOOL")
 
     # -------------------------------
     # Global options to every command
@@ -123,7 +123,7 @@ def create_parser():
 
     subparser = parser.add_subparsers(dest='command')
 
-    parser_db = subparser.add_parser('dbase', help='Database commands')
+    parser_db = subparser.add_parser('data', help='Database commands')
   
     # ---------------------------------------
     # Create second level parsers for 'dbase' 
@@ -146,18 +146,21 @@ def main():
     try:
         options = create_parser().parse_args(sys.argv[1:])
         configure_logging(options)
-        name = os.path.split(os.path.dirname(sys.argv[0]))[-1]
+        #name = os.path.split(os.path.dirname(sys.argv[0]))[-1]
+        #name = __name__
+        name = "zpida"
         log.info(f"============== {name} {__version__} ==============")
         package = f"{name}"
         command = f"{options.command}"
         subcommand = f"{options.subcommand}"
         try:
+            log.debug("loading command from module %s in package %s", command, package)
             command = importlib.import_module(command, package=package)
         except ModuleNotFoundError:	 # when debugging module in git source tree ...
             command = f".{options.command}"
+            log.debug("retrying loading command from module %s in package %s", command, package)
             command = importlib.import_module(command, package=package)
-        else:
-            getattr(command, subcommand)(options)
+        getattr(command, subcommand)(options)
     except AttributeError:
             log.critical("[%s] No subcommand was given ", __name__)
     except KeyboardInterrupt:

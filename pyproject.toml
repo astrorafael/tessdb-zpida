@@ -47,3 +47,14 @@ zpida = "zpida.main:main"
 # pyproject.toml
 [tool.setuptools_scm]
 write_to = "src/zpida/_version.py"
+
+[tool.setuptools.packages.find]
+# scanning for namespace packages is true by default in pyproject.toml, so
+# you do NOT need to include the following line.
+namespaces = true
+where = ["src"]
+
+[tool.setuptools.package-data]
+"zpida.dbase.sql" = ["*.sql"]
+"zpida.dbase.sql.initial" = ["*.sql"]
+"zpida.dbase.sql.updates" = ["*.sql"]
