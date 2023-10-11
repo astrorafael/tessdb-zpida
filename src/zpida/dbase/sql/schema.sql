@@ -9,3 +9,22 @@ CREATE TABLE IF NOT EXISTS config_t
 
     PRIMARY KEY(section, property)
 );
+
+CREATE TABLE IF NOT EXISTS ida_summary_t
+(
+	filename    		TEXT NOT NULL,  	-- Filename where the summary row comes from
+    t0        			TIMESTAMP NOT NULL,	-- Timestamp of first valid IDA reading
+    t1        			TIMESTAMP NOT NULL,	-- Timestamp of last valid IDA reading
+    mac          		TEXT NOT NULL,  	-- Reportedly MAC Address by TESSDB
+    name         		TEXT NOT NULL,  	-- Reportedly photometer name reported by TESSDB
+    valid_rows 			INTEGER NOT NULL,  	-- number of rows with valid ZP / Freq / Magnitude data
+    data_rows  			INTEGER NOT NULL,  	-- number of scanned rows in the summary file
+	computed_zp_median  REAL NOT NULL, 		-- Median of computed ZP given frequencies and magnitudes
+	computed_zp_stdev	REAL NOT NULL, 		-- Estimated standard deviation of computed ZP
+	computed_zp_max		REAL NOT NULL, 		-- Maximum computed ZP in the IDA file 
+	computed_zp_min 	REAL NOT NULL, 		-- Maximum computed ZP in the IDA file 
+	tessdb_zp_median	REAL NOT NULL, 		-- ZP as reported by TESSDB (median of IDA file)
+	tessdb_zp_stdev		REAL NOT NULL, 		-- Std dev of reported ZP by TESSDB (normally 0.0)
+
+    PRIMARY KEY(filename)
+);

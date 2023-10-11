@@ -94,6 +94,7 @@ def analyze_single_file(path):
 	result['mac'] = mac
 	result['name'] = name
 	result['timezone'] = timezone
+	result['filename'] = os.path.basename(path)
 	log.info("%s", result)
 	return result
 
