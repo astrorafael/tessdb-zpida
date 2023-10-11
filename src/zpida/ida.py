@@ -107,5 +107,5 @@ def analyze(options):
 	elif options.dir:
 		folders = scan_non_empty_dirs(options.dir)
 		for folder in folders:
-			analyze_directory(folder)
+			summaries = analyze_directory(folder)
 
