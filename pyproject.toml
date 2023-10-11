@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools >= 45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tessdb-zpida"
+dynamic = ["version"]
+description = "TESS-W ZP analysis from IDA observation files"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "GPL-3.0-or-later"}
+authors = [
+    {name = "Rafael González", email = "rafael08@ucm.es"},
+]
+classifiers = [
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License (GPL)",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    'Topic :: Scientific/Engineering :: Atmospheric Science',
+]
+dependencies = [
+   "python-decouple",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=6",
+]
+
+[project.urls]
+Homepage = "https://github.com/astrorafael/tessdb-zpida"
+Repository = "https://github.com/astrorafael/tessdb-zpida.git"
+
+
+[project.scripts]
+zpida = "zpida.main:main"
+
+
+# pyproject.toml
+[tool.setuptools_scm]
+write_to = "src/zpida/_version.py"
