@@ -96,13 +96,17 @@ def analyze_single_file(path):
 	with open(path) as f:
 		log.debug("processing %s", path)
 		header = [ f.readline().strip() for i in range(35) ]
+		name = re.search(name_re, header[5]).group(1)
 		try:
 			mac = re.search(mac_re, header[18]).group(1)
 		except AttributeError:
 			log.error("%s: MAC Format error => %s",path,header[18])
 			mac = None
-		name = re.search(name_re, header[5]).group(1)
-		timezone = re.search(tzone_re, header[9]).group(1)
+		try:
+			timezone = re.search(tzone_re, header[9]).group(1)
+		except AttributeError:
+			log.error("%s: Timezone Format error => %s",path,header[9])
+			timezone = None
 		tessdb_zp_list = list()
 		computed_zp_list = list()
 		timestamp_list = list()

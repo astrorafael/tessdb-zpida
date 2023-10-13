@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS ida_summary_t
 	filename    		TEXT NOT NULL,  	-- Filename where the summary row comes from
     name                TEXT NOT NULL,      -- Reportedly photometer name reported by TESSDB
     mac                 TEXT,               -- Reportedly MAC Address in IDA header by TESSDB
-    timezone            TEXT NOT NULL,      -- Reporetd Timze zone in IDA header by TESSDB
+    timezone            TEXT,               -- Reportedly Timezone zone in IDA header by TESSDB
     t0        			TIMESTAMP NOT NULL,	-- Timestamp of first valid IDA reading
     t1        			TIMESTAMP NOT NULL,	-- Timestamp of last valid IDA reading
     valid_rows 			INTEGER NOT NULL,  	-- number of rows with valid ZP / Freq / Magnitude data
