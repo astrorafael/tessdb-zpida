@@ -174,6 +174,7 @@ def main():
         getattr(command, subcommand)(options)
     except AttributeError:
             log.critical("[%s] No subcommand was given ", __name__)
+            traceback.print_exc()
     except KeyboardInterrupt:
         log.critical("[%s] Interrupted by user ", __name__)
     except Exception as e:
