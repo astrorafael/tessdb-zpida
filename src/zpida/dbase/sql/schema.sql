@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS ida_summary_t
     t0        			TIMESTAMP NOT NULL,	-- Timestamp of first valid IDA reading
     t1        			TIMESTAMP NOT NULL,	-- Timestamp of last valid IDA reading
     valid_rows 			INTEGER NOT NULL,  	-- number of rows with valid ZP / Freq / Magnitude data
-    data_rows  			INTEGER NOT NULL,  	-- number of scanned rows in the summary file
+    data_rows  			INTEGER NOT NULL,  	-- number of scanned rows in the summary file (>= valid_rows)
 	computed_zp_median  REAL NOT NULL, 		-- Median of computed ZP given frequencies and magnitudes
 	computed_zp_stdev	REAL NOT NULL, 		-- Estimated standard deviation of computed ZP
 	computed_zp_max		REAL NOT NULL, 		-- Maximum computed ZP in the IDA file 
