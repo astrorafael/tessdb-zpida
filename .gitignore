@@ -162,3 +162,6 @@ cython_debug/
 # Additional stuff
 *.db
 IDA/
+*.txt
+*.csv
+
