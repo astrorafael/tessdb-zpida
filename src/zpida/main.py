@@ -63,7 +63,7 @@ def configure_logging(options):
         log.addHandler(fh)
 
     if options.modules:
-        modules = ",".split(options.modules)
+        modules = options.modules.split(',')
         for module in modules:
             logging.getLogger(module).setLevel(logging.DEBUG)
 
